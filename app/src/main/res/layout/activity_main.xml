@@ -3,31 +3,37 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/rojo"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="My Pokedex"
         android:layout_gravity="center"
-        android:textSize="25sp"
-        android:layout_marginTop="25dp"/>
+        android:layout_marginTop="30dp"
+        android:text="My Pokédex"
+        android:textColor="@color/amarillo"
+        android:textSize="28sp"
+        android:textStyle="bold" />
 
     <ListView
         android:id="@+id/pokemonList"
         android:layout_width="match_parent"
         android:layout_height="500dp"
-        android:layout_marginTop="35dp"/>
+        android:layout_marginTop="35dp"
+        android:background="@color/gris" />
 
     <Button
         android:id="@+id/addPokemon"
         android:layout_width="wrap_content"
-        android:layout_marginTop="25dp"
-        android:layout_gravity="center"
         android:layout_height="50dp"
-        android:text="Registrar Pokemon"/>
-
+        android:layout_gravity="center"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/button_rounded"
+        android:padding="10dp"
+        android:text="Registrar Pokémon"
+        android:textColor="@color/black" />
 </LinearLayout>

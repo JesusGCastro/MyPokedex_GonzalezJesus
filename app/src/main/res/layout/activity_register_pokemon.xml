@@ -3,18 +3,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/rojo"
+    android:orientation="vertical"
     tools:context=".RegisterPokemonActivity">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add Pokemon"
-        android:textSize="25sp"
         android:layout_gravity="center"
-        android:layout_marginTop="25dp"/>
+        android:layout_marginTop="100dp"
+        android:text="Add Pokémon"
+        android:textColor="@color/amarillo"
+        android:textSize="28sp"
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/pokemonName"
@@ -22,7 +25,10 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="25dp"
         android:layout_marginTop="35dp"
-        android:inputType="text"/>
+        android:background="@color/gris"
+        android:hint="Pokémon Name"
+        android:inputType="text"
+        android:padding="10dp" />
 
     <EditText
         android:id="@+id/pokemonNumber"
@@ -30,29 +36,38 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="25dp"
         android:layout_marginTop="25dp"
-        android:inputType="number"/>
+        android:background="@color/gris"
+        android:hint="Pokédex Number"
+        android:inputType="number"
+        android:padding="10dp" />
 
     <ImageView
         android:id="@+id/thumbnail"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
         android:layout_gravity="center"
-        android:layout_marginTop="25dp"/>
+        android:layout_marginTop="25dp"
+        android:background="@android:color/transparent" />
 
     <Button
         android:id="@+id/selectImage"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:text="Select Image"
         android:layout_gravity="center"
-        android:layout_marginTop="15dp"/>
+        android:layout_marginTop="15dp"
+        android:background="@drawable/button_rounded"
+        android:padding="10dp"
+        android:text="Select Image"
+        android:textColor="@color/black" />
 
     <Button
         android:id="@+id/savePokemon"
         android:layout_width="200dp"
         android:layout_height="50dp"
-        android:text="Save Pokemon"
         android:layout_gravity="center"
-        android:layout_marginTop="50dp"/>
-
+        android:layout_marginTop="50dp"
+        android:background="@drawable/button_rounded"
+        android:padding="10dp"
+        android:text="Save Pokémon"
+        android:textColor="@color/black" />
 </LinearLayout>

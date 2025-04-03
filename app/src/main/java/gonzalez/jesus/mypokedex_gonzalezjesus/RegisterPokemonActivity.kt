@@ -9,6 +9,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -16,6 +17,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.cloudinary.android.MediaManager
 import com.cloudinary.android.callback.ErrorInfo
 import com.cloudinary.android.callback.UploadCallback
+import com.google.firebase.database.FirebaseDatabase
 
 class RegisterPokemonActivity : AppCompatActivity() {
 
@@ -47,10 +49,17 @@ class RegisterPokemonActivity : AppCompatActivity() {
             startActivityForResult(intent, REQUEST_IMAGE_GET)
         }
 
-        save.setOnClickListener{
-            savePokemon()
-        }
+        save.setOnClickListener {
+            val nameText = name.text.toString().trim()
+            val numberText = number.text.toString().trim()
 
+            if (nameText.isEmpty() || numberText.isEmpty() || imageUri == null) {
+                Toast.makeText(this, "Ingresa y selecciona todos los datos de tu Pokémon", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            setUri { imageUrl -> savePokemon(nameText, numberText, imageUrl) }
+        }
     }
 
     override fun onActivityResult(
@@ -63,16 +72,22 @@ class RegisterPokemonActivity : AppCompatActivity() {
             val fullImageUri: Uri? = data?.data
 
             if (fullImageUri != null){
+                imageUri = fullImageUri
                 changeImage(fullImageUri)
             }
         }
     }
 
-    private fun initCloudinary(){
-        val config: MutableMap<String, String> = HashMap<String, String>()
-        config["cloud_name"] = CLOUD_NAME
-        MediaManager.init(this, config)
+    private fun initCloudinary() {
+        try {
+            MediaManager.get()
+        } catch (e: Exception) {
+            val config: MutableMap<String, String> = HashMap()
+            config["cloud_name"] = CLOUD_NAME
+            MediaManager.init(this, config)
+        }
     }
+
 
     fun changeImage(uri: Uri){
         val thumbnail: ImageView = findViewById(R.id.thumbnail) as ImageView
@@ -83,34 +98,42 @@ class RegisterPokemonActivity : AppCompatActivity() {
         }
     }
 
-    fun savePokemon(): String{
-        var url : String = ""
+    fun setUri(callback: (String) -> Unit){
+        var url: String = ""
 
         if (imageUri != null){
-            MediaManager.get().upload(UPLOAD_PRESET).callback(object : UploadCallback{
-                override fun onStart(requestId: String?) {
+            MediaManager.get().upload(imageUri).unsigned(UPLOAD_PRESET).callback(object: UploadCallback {
+                override fun onStart(requesId: String) {
                     Log.d("Cloudinary Quickstart", "Upload start")
                 }
-
-                override fun onProgress(requestId: String?, bytes: Long, totalBytes: Long) {
+                override fun onProgress (requesId: String, bytes: Long, totalBytes: Long) {
                     Log.d("Cloudinary Quickstart", "Upload progress")
                 }
-
-                override fun onSuccess(requestId: String?, resultData: MutableMap<*,*>) {
-                    Log.d("Cloudinary Quickstart", "Upload start")
-                    url = resultData["secure_url"] as String? ?: ""
-                    Log.d("URL}", url)
+                override fun onSuccess (requestId: String, resultData: Map<*, *>){
+                    Log.d("Cloudinary Quickstart", "Upload success")
+                    url = resultData ["secure_url"] as String?:""
+                    callback(url)
                 }
-
-                override fun onError(requestId: String?, error: ErrorInfo?) {
+                override fun onError (requesId: String, error: ErrorInfo) {
                     Log.d("Cloudinary Quickstart", "Upload failed")
                 }
+                override fun onReschedule (requesId: String, error: ErrorInfo){
 
-                override fun onReschedule(requestId: String?, error: ErrorInfo?) {
                 }
             }).dispatch()
-
         }
-        return url
+    }
+
+    fun savePokemon(name: String, number: String, uri: String){
+        val database = FirebaseDatabase.getInstance().getReference("pokemons").child(number)
+
+        val pokemon = Pokemon(name, number.toInt(), uri)
+
+        database.setValue(pokemon).addOnSuccessListener {
+            Toast.makeText(this,"Pokemon guardado en Pokedex", Toast.LENGTH_SHORT).show()
+            finish()
+        }.addOnFailureListener {
+            Toast.makeText(this,"Error al guardar pokemon en Pokedex", Toast.LENGTH_SHORT).show()
+        }
     }
 }
